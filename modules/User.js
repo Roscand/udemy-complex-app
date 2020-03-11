@@ -3,9 +3,13 @@ const bcryptjs = require('bcryptjs');
 const md5 = require('md5');
 const usersCollection = require('../db').db().collection('users');
 
-const User = function(data) {
+let User = function(data, getAvatar) {
     this.data = data;
     this.errors = [];
+    if (getAvatar == undefined) {
+        getAvatar = false;
+    };
+    if (getAvatar) {this.getAvatar()};
 };
 
 User.prototype.cleanUp = function() {
@@ -80,7 +84,7 @@ User.prototype.register = function() {
 };
 
 User.prototype.getAvatar = function() {
-    this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`
-}
+    this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`;
+};
 
 module.exports = User;
