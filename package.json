@@ -4,7 +4,7 @@
   "description": "Blogging App based on Node.js / Express / MongoDB based on Brad Schiff's Udemy Course.",
   "main": "index.js",
   "scripts": {
-    "watch": "nodemon app",
+    "watch": "nodemon db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "RoscandDesign",
