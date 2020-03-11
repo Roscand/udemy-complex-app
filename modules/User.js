@@ -35,10 +35,10 @@ User.prototype.login = function() {
         this.cleanUp();
         usersCollection.findOne({username: this.data.username}).then((attemptedUser) => {
             if (attemptedUser && bcryptjs.compareSync(this.data.password, attemptedUser.password)) {
-                resolve("User logged in successfully.");
+                resolve();
             } else {
                 reject("Invalid username / password.");
-            };
+            }
         }).catch(() => {
             reject("Please try again later.");
         });

@@ -3,7 +3,8 @@ const User = require('../modules/User');
 exports.login = function(req, res) {
     let user = new User(req.body);
     user.login().then(() => {
-        res.redirect('/');
+        req.session.user = {username: user.data.username};
+        res.send('logged in');
     }).catch((e) => {
         res.send(e);
     });
@@ -24,5 +25,9 @@ exports.register = function(req, res) {
 };
 
 exports.home = function(req, res) {
-    res.render('home-guest');
+    if (req.session.user) {
+        res.send('Welcome to the actual application!');
+    } else {
+        res.render('home-guest');
+    };
 };
