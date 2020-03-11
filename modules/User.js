@@ -1,5 +1,6 @@
 const validator = require('validator');
 const bcryptjs = require('bcryptjs');
+const md5 = require('md5');
 const usersCollection = require('../db').db().collection('users');
 
 const User = function(data) {
@@ -37,7 +38,7 @@ User.prototype.validate =  function() {
 
         if (validator.isEmail(this.data.email)) {
             let emailExists = await usersCollection.findOne({email: this.data.email})
-            if (emailExists) {this.errors.push("That email is already taken.")};
+            if (emailExists) {this.errors.push("That email is already being used.")};
         };
 
         resolve();
@@ -49,6 +50,7 @@ User.prototype.login = function() {
         this.cleanUp();
         usersCollection.findOne({username: this.data.username}).then((attemptedUser) => {
             if (attemptedUser && bcryptjs.compareSync(this.data.password, attemptedUser.password)) {
+                this.getAvatar();
                 resolve();
             } else {
                 reject("Invalid username / password.");
@@ -68,11 +70,16 @@ User.prototype.register = function() {
                 const salt = bcryptjs.genSaltSync(10);
                 this.data.password = bcryptjs.hashSync(this.data.password, salt);
                 await usersCollection.insertOne(this.data);
+                this.getAvatar();
                 resolve();
             } else {
                 reject(this.errors);
             };
     });
 };
+
+User.prototype.getAvatar = function() {
+    this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`
+}
 
 module.exports = User;
