@@ -4,14 +4,14 @@ exports.login = function(req, res) {
     let user = new User(req.body);
     user.login().then(() => {
         req.session.user = {username: user.data.username};
-        res.send('logged in');
+        req.session.save(() => {res.redirect('/')});
     }).catch((e) => {
         res.send(e);
     });
 };
 
 exports.logout = function(req, res) {
-
+    req.session.destroy(() => res.redirect('/'));
 };
 
 exports.register = function(req, res) {
@@ -26,7 +26,7 @@ exports.register = function(req, res) {
 
 exports.home = function(req, res) {
     if (req.session.user) {
-        res.send('Welcome to the actual application!');
+        res.render('home-dashboard', {username: req.session.user.username});
     } else {
         res.render('home-guest');
     };
