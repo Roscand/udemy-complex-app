@@ -3,6 +3,7 @@ const router = express.Router();
 
 const userController = require('./controllers/userController');
 const postController = require('./controllers/postController');
+const followController = require('./controllers/followController');
 
 
 
@@ -26,6 +27,10 @@ router.get  ('/post/:id/edit', userController.mustBeLoggedIn, postController.vie
 router.post ('/post/:id/edit', userController.mustBeLoggedIn, postController.edit);
 router.post ('/post/:id/delete', userController.mustBeLoggedIn, postController.delete);
 router.post ('/search', postController.search);
+
+// Follow
+
+router.post ('/addFollow/:username', userController.mustBeLoggedIn, followController.addFollow);
 
 
 
