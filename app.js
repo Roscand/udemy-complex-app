@@ -16,7 +16,12 @@ app.use(sessionOptions);
 app.use(flash());
 
 app.use(function(req, res, next) {
+    // Current user ID avaliable on the REQ object
+    req.session.user ? req.visitorId = req.session.user._id : req.visitorId = 0;
+
+    // User session data avaliable for EJS
     res.locals.user = req.session.user;
+
     next();
 });
 
