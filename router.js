@@ -11,6 +11,10 @@ router.post('/register', userController.register);
 router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 
+// Profile
+
+router.get('/profile/:username', userController.ifUserExists, userController.profilePostsScreen);
+
 // Post
 
 router.get('/create-post', userController.mustBeLoggedIn, postController.viewCreateScreen);
