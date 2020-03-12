@@ -16,6 +16,10 @@ app.use(sessionOptions);
 app.use(flash());
 
 app.use(function(req, res, next) {
+    // Error/success messages for EJS
+    res.locals.errors = req.flash('errors');
+    res.locals.success = req.flash('success');
+
     // Current user ID avaliable on the REQ object
     req.session.user ? req.visitorId = req.session.user._id : req.visitorId = 0;
 
