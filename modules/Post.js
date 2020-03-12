@@ -1,4 +1,5 @@
 const ObjectID = require('mongodb').ObjectID;
+const sanitizeHTML = require('sanitize-html');
 const postsCollection = require('../db').db().collection('posts');
 const User = require('./User');
 
@@ -15,8 +16,8 @@ Post.prototype.cleanUp = function() {
     if (typeof(this.data.body) != "string") {this.data.body};
 
     this.data = {
-        title: this.data.title.trim(),
-        body: this.data.body.trim(),
+        title: sanitizeHTML(this.data.title.trim(), {allowedTags: [], allowedAttributes: {}}),
+        body: sanitizeHTML(this.data.body.trim(), {allowedTags: [], allowedAttributes: {}}),
         createdDate: new Date(),
         author: new ObjectID(this.userid)
     };
