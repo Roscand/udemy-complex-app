@@ -1,6 +1,18 @@
+const jwt = require('jsonwebtoken');
+
 const User = require('../modules/User');
 const Post = require('../modules/Post');
 const Follow = require('../modules/Follow');
+
+exports.apiGetPostsByUsername = async function(req, res) {
+    try {
+        let authorDoc = await User.findByUsername(req.params.username);
+        let posts = await Post.findByAuthorId(authorDoc._id);
+        res.json(posts);
+    } catch {
+        res.json('Sorry. Invalid user requested.');
+    };
+};
 
 exports.doesUsernameExist = function(req, res) {
     User.findByUsername(req.body.username).then(() => {
@@ -39,6 +51,15 @@ exports.sharedProfileData = async function(req, res, next) {
     next();
 };
 
+exports.apiMustBeLoggedIn = function(req, res, next) {
+    try {
+        req.apiUser = jwt.verify(req.body.token, process.env.JWTSECRET);
+        next();
+    } catch {
+        res.json("Sorry, you're not logged in.");
+    };
+};
+
 exports.mustBeLoggedIn = function(req, res, next) {
     if (req.session.user) {
         next();
@@ -63,7 +84,7 @@ exports.login = function(req, res) {
 exports.apiLogin = function(req, res) {
     let user = new User(req.body);
     user.login().then(() => {
-        res.json("Good job. Logged in.");
+        res.json(jwt.sign({_id: user.data._id}, process.env.JWTSECRET, {expiresIn: '7d'}));
     }).catch(function(error) {
         res.json("Sorry. You shall not pass.");
     });
