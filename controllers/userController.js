@@ -59,6 +59,16 @@ exports.login = function(req, res) {
     });
 };
 
+
+exports.apiLogin = function(req, res) {
+    let user = new User(req.body);
+    user.login().then(() => {
+        res.json("Good job. Logged in.");
+    }).catch(function(error) {
+        res.json("Sorry. You shall not pass.");
+    });
+};
+
 exports.logout = function(req, res) {
     req.session.destroy(() => res.redirect('/'));
 };
